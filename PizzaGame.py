@@ -1,4 +1,4 @@
-from livewires import games
+from livewires import games, color
 import time
 import random
 games.init(screen_width = 640, screen_height = 480, fps = 50)
@@ -9,6 +9,12 @@ class Pizza(games.Sprite):
             self.dx = - self.dx
         if self.bottom > games.screen.height or self.top < 0:
             self.dy = - self.dy
+    
+    def handle_collide(self):
+        self.x = random.randrange(games.screen.width)
+        self.y = random.randrange(games.screen.height)
+        self.dx += 1
+        self.dy += 1
 
 class Pan(games.Sprite):
     """ Сковорода """
@@ -16,7 +22,12 @@ class Pan(games.Sprite):
         """ Перемещение в позицию курсора"""
         self.x = games.mouse.x
         self.y = games.mouse.y
+        self.check_collide()
 
+    def check_collide(self):
+        """Проверяет столкновения"""
+        for pizza in self.overlapping_sprites:
+            pizza.handle_collide()
 
 def main():
     wall_image = games.load_image("wall.jpg", transparent=False)
@@ -24,10 +35,10 @@ def main():
 
     pizza_image = games.load_image("pizza.bmp")
     the_pizza = Pizza(image = pizza_image,
-                         x = games.screen.width/2,
-                         y = games.screen.height/2,
-                         dx =2,
-                         dy =2)
+                         x = random.randrange(games.screen.width),
+                         y = random.randrange(games.screen.height),
+                         dx =1,
+                         dy =1)
     games.screen.add(the_pizza)
 
     pan_image = games.load_image("pan.bmp")
